@@ -32,7 +32,9 @@ data <- read.csv(file="https://onlinestatbook.com/case_studies_rvls/physical_str
 ```
 
 # Introduction
-We predict simulated a simulated strength score base on arm and grip strength. We will find 3 models and compare them. The response variable is numerical, and the explanatory variable is numerical, so we use the num-num helper file.
+
+We predict simulated a simulated strength score base on arm and grip strength. These 3 models will be found and compared upon one another. The response variable is numerical, and the explanatory variable is numerical, so we use the num-num helper file.
+
 
 
 ## Model 1 SIM~ARMS
@@ -64,6 +66,8 @@ summary.lm(model.1)
 ```
 Both the intercept and the coefficient of ARM strength are significantly different from 0 
 
+### Prediction Interval
+
 ```{r}
 newdata = data.frame(ARM=88, GRIP=94)
 predict(model.1, newdata, interval="predict")
@@ -71,39 +75,80 @@ predict(model.1, newdata, interval="predict")
 
 The prediction interval is from -1.7 to 3.1 for SIM score. 
 
-#### Predict at target point
-
-
-#### scatterplot with model fit
-  
 
 ## Model 2 SIM~GRIP
 
-### Now add in scatterplot
+## Results
+
+### Graphical Results
+
+```{r}
+model.2 <- lm(SIMS~GRIP,data=data)
+plot(SIMS~GRIP,data=data)
+abline(model.2, col='red')
+```
+
+This graph shows that the Grip strength goes up and the simulation goes up as well.The spread of the points around the regression line in the grip plot are more spread out than are strength plot.
 
 
-### Numerical results 
+
+### Numerical Results
+
+```{r}
+cor(SIMS~GRIP,data=data)
+```
+
+The correlation is 0.63 which shows that arm strength is related to sim score.
 
 
-### Inferential  (Build model.2)
-  
+### Inferential Results
 
-#### predict model.2 at target point
+```{r}
+model.2 <- lm(SIMS~GRIP,data=data)
+summary.lm(model.2)
+```
 
-#### now add the model fit to our plot for model.2
-  
+Both the intercept and the coefficient GRIP strength are significantly different from 0.
+
+## Prediction Interval 
+
+```{r}
+newdata = data.frame(ARM=88, GRIP=94)
+predict(model.2, newdata, interval="predict")
+```
+
+The prediction interval is from -3.1 to 2.0 for SIM score.
 
 
 ## Model 3 SIM~ARM+GRIP
 
+## Results
+
 ### Numerical results (cor)
 
-`
+```{r}
+cor(SIMS~ARM+GRIP,data=data)
+```
   
+The correlation is 0.73 which shows that Arm and Grip strength is related to sim score.
+
 ### Inferential  (Build 2-dimentional model.3)
 
-#### predict model.3 at target point
-  
+```{r}
+model.3 <- lm(SIMS~ARM+GRIP,data=data)
+summary.lm(model.3)
+```
+
+As arm plus grip strength goes up, the simulation indicates that the sims will go up as well.
+
+#### Predict Interval
+```{r}
+newdata = data.frame(ARM=88, GRIP=94)
+predict(model.3, newdata, interval="predict")
+```
+
+The prediction interval is from -2.1 to 2.4 for SIM score.
+
 
 ## Comparing nested models ANOVA Test
 
@@ -112,3 +157,12 @@ The prediction interval is from -1.7 to 3.1 for SIM score.
 
 ## Informally compare Model.1 with model.2
 
+
+```{r}
+anova(model.3, model.1)
+```
+
+The p-value is .000000000149, Thus I reject the null hypothesis. Model three is smaller than model two as the rss for model three is smaller.
+# Dicussion/ Conclusion
+
+ Model 3 has the best between model 1 and model 2 because it has a smaller rss. To conclude, model 1 is better than model 2 however, we would need a smaller one, therefore model three is the best.
